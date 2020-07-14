@@ -1,12 +1,16 @@
-package ox.softeng.metadatacatalogue.plugins.test
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
-import ox.softeng.metadatacatalogue.core.feature.Folder
-import ox.softeng.metadatacatalogue.core.user.CatalogueUser
-import ox.softeng.metadatacatalogue.core.util.DataBootstrap
-import ox.softeng.metadatacatalogue.plugins.test.boot.TestGrailsApplication
+import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
+import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
+import uk.ac.ox.softeng.maurodatamapper.security.User
+import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
+import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
 import grails.boot.GrailsApp
+import grails.boot.config.GrailsAutoConfiguration
+import grails.core.GrailsApplication
 import grails.util.Environment
+import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
 import org.grails.transaction.GrailsTransactionAttribute
 import org.junit.After
@@ -17,8 +21,6 @@ import org.junit.Rule
 import org.junit.rules.TestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.MessageSource
 import org.springframework.orm.hibernate5.SessionHolder
@@ -26,24 +28,26 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
-import java.lang.management.ManagementFactory
-import java.lang.management.RuntimeMXBean
-
 import static org.junit.Assert.assertNotNull
 
 /**
  * @since 08/08/2017
  */
-abstract class BasePluginTest implements DataBootstrap {
+@Slf4j
+abstract class BasePluginTest {
+
     protected static ApplicationContext applicationContext
     private static PlatformTransactionManager transactionManager
     private TransactionStatus transactionStatus
-    protected CatalogueUser catalogueUser
+
+    Folder testFolder
+
+    abstract Class<GrailsAutoConfiguration> getTestGrailsApplicationClass()
 
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(Description description) {
-            getLogger().warn('--- {} ---', description.getDisplayName())
+            log.warn('--- {} ---', description.getDisplayName())
         }
     }
 
@@ -56,14 +60,17 @@ abstract class BasePluginTest implements DataBootstrap {
     void setup() {
         transactionStatus = beginTransaction()
 
-        catalogueUser = editor
-        assertNotNull('We must have a catalogue user', catalogueUser)
-
-        if (!Folder.countByLabel('Test Folder')) {
-            checkAndSave(new Folder(label: 'Test Folder', createdBy: editor).addToReadableByUsers(reader2))
+        testFolder = Folder.findByLabel('Plugin Test Folder')
+        if (!testFolder) {
+            testFolder = new Folder(label: 'Plugin Test Folder', createdBy: StandardEmailAddress.INTEGRATION_TEST)
+            GormUtils.checkAndSave(getMessageSource(), testFolder)
         }
 
         assertNotNull("We must have a test folder", testFolder)
+    }
+
+    MessageSource getMessageSource() {
+        getBean(MessageSource)
     }
 
     protected <T> T getBean(Class<T> beanClass) {
@@ -81,16 +88,11 @@ abstract class BasePluginTest implements DataBootstrap {
     @BeforeClass
     static void setupGorm() {
 
-        // assume SLF4J is bound to logback in the current environment
-        //LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory()
-        // print logback's internal status
-        // StatusPrinter.print(lc)
-
         System.setProperty(Environment.KEY, 'test')
-        System.setProperty('mc.env', 'plugin.test')
+        System.setProperty('mdm.env', 'plugin.test')
         if (System.getProperty('server.port') == null) System.setProperty('server.port', '8181')
 
-        applicationContext = GrailsApp.run(TestGrailsApplication)
+        applicationContext = GrailsApp.run(getTestGrailsApplicationClass())
 
         assertNotNull('We must have an applicationContext', applicationContext)
 
@@ -105,49 +107,11 @@ abstract class BasePluginTest implements DataBootstrap {
 
         assertNotNull('We must have a transactionManager', hibernateDatastore)
 
-        outputRuntimeArgs()
+        Utils.outputRuntimeArgs(getClass())
     }
 
     @AfterClass
     static void shutdownGorm() throws IOException {
         if (applicationContext != null) GrailsApp.exit(applicationContext)
-    }
-
-    @Override
-    MessageSource getMessageSource() {
-        getBean(MessageSource)
-    }
-
-    static void outputRuntimeArgs() {
-        Logger logger = LoggerFactory.getLogger(BasePluginTest)
-        try {
-            RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean()
-            List<String> arguments = runtimeMxBean.getInputArguments()
-
-            logger.warn("Running with JVM args : {}", arguments.size())
-            Map<String, String> map = arguments.collectEntries {arg ->
-                arg.split('=').toList()
-            }.sort() as Map<String, String>
-
-            map.findAll {k, v ->
-                k.startsWith('-Denv') ||
-                k.startsWith('-Dgrails') ||
-                k.startsWith('-Dinfo') ||
-                k.startsWith('-Djava.version') ||
-                k.startsWith('-Dspring') ||
-                k.startsWith('-Duser.timezone') ||
-                k.startsWith('-X')
-            }.each {k, v ->
-                if (v) {
-                    println "${k}=${v}"
-                    logger.warn('{}={}', k, v)
-                } else {
-                    println "${k}"
-                    logger.warn('{}', k)
-                }
-            }
-        } catch (Exception ex) {
-            logger.error('Errr', ex)
-        }
     }
 }

@@ -1,12 +1,13 @@
-package ox.softeng.metadatacatalogue.plugins.test
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
-import ox.softeng.metadatacatalogue.core.api.exception.ApiException
-import ox.softeng.metadatacatalogue.core.catalogue.linkable.datamodel.DataModel
-import ox.softeng.metadatacatalogue.core.catalogue.linkable.datamodel.DataModelService
-import ox.softeng.metadatacatalogue.core.spi.importer.ImporterService
-import ox.softeng.metadatacatalogue.plugins.database.AbstractDatabaseImporter
-import ox.softeng.metadatacatalogue.plugins.database.DatabaseImportParameters
+import uk.ac.ox.softeng.maurodatamapper.api.exception.ApiException
+import uk.ac.ox.softeng.maurodatamapper.core.importer.ImporterService
+import uk.ac.ox.softeng.maurodatamapper.datamodel.DataModel
+import uk.ac.ox.softeng.maurodatamapper.datamodel.DataModelService
+import uk.ac.ox.softeng.maurodatamapper.plugin.database.AbstractDatabaseDataModelImporterProviderService
+import uk.ac.ox.softeng.maurodatamapper.plugin.database.DatabaseDataModelImporterProviderServiceParameters
 
+import groovy.util.logging.Slf4j
 import org.junit.Before
 import org.junit.Test
 import org.springframework.validation.FieldError
@@ -17,7 +18,9 @@ import static org.junit.Assert.fail
 /**
  * @since 08/08/2017
  */
-abstract class BaseDatabasePluginTest<P extends DatabaseImportParameters, T extends AbstractDatabaseImporter<P>>
+@Slf4j
+abstract class BaseDatabasePluginTest<P extends DatabaseDataModelImporterProviderServiceParameters,
+    T extends AbstractDatabaseDataModelImporterProviderService<P>>
     extends BaseImportPluginTest<DataModel, P, T> {
 
     protected int databasePort
@@ -64,7 +67,7 @@ abstract class BaseDatabasePluginTest<P extends DatabaseImportParameters, T exte
 
     protected DataModel importDataModelAndRetrieveFromDatabase(P params) {
 
-        def errors = getBean(ImporterService).validateParameters(params, getImporterInstance().importerPluginParametersClass)
+        def errors = getBean(ImporterService).validateParameters(params, getImporterInstance().importerProviderServiceParametersClass)
 
         if (errors.hasErrors()) {
             errors.allErrors.each {error ->
@@ -74,7 +77,7 @@ abstract class BaseDatabasePluginTest<P extends DatabaseImportParameters, T exte
 
                 if (error instanceof FieldError) msg += " :: [${error.field}]"
 
-                logger.error msg
+                log.error msg
                 System.err.println msg
             }
             fail('Import parameters are not valid')
@@ -88,7 +91,7 @@ abstract class BaseDatabasePluginTest<P extends DatabaseImportParameters, T exte
 
         DataModel importedModel = importDomain(params)
 
-        getLogger().debug('Getting datamodel {} from database to verify', importedModel.getId())
+        log.debug('Getting datamodel {} from database to verify', importedModel.getId())
         // Rather than use the one returned from the import, we want to check whats actually been saved into the DB
         DataModel dataModel = DataModel.get(importedModel.getId())
         assertNotNull('DataModel should exist in Database', dataModel)

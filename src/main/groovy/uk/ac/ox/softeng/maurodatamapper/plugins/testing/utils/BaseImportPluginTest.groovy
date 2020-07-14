@@ -1,10 +1,12 @@
-package ox.softeng.metadatacatalogue.plugins.test
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
+import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.ImporterProviderService
+import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.parameter.ImporterProviderServiceParameters
+import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user.IntegrationTestUser
+import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
+import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
-import ox.softeng.metadatacatalogue.core.spi.importer.ImporterPlugin
-import ox.softeng.metadatacatalogue.core.spi.importer.parameter.ImporterPluginParameters
-import ox.softeng.metadatacatalogue.core.util.Utils
-
+import groovy.util.logging.Slf4j
 import org.grails.datastore.gorm.GormEntity
 import org.hibernate.SessionFactory
 import org.springframework.core.GenericTypeResolver
@@ -16,7 +18,8 @@ import static org.junit.Assert.fail
 /**
  * @since 08/08/2017
  */
-abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPluginParameters, T extends ImporterPlugin<D, P>>
+@Slf4j
+abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterProviderServiceParameters, T extends ImporterProviderService<D, P>>
     extends BasePluginTest {
 
     abstract D saveDomain(D domain)
@@ -26,7 +29,7 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPlug
         Class[] types = GenericTypeResolver.resolveTypeArguments(getClass(), BaseImportPluginTest)
 
         for (Class clazz : types) {
-            if (ImporterPlugin.isAssignableFrom(clazz)) return getBean((Class<T>) clazz)
+            if (ImporterProviderService.isAssignableFrom(clazz)) return getBean((Class<T>) clazz)
         }
         null
     }
@@ -41,18 +44,19 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPlug
             T importer = getImporterInstance()
             long startTime = System.currentTimeMillis()
 
-            getLogger().debug('Importing {}', importer.getDisplayName())
-            D importedModel = importer.importDomain(catalogueUser, params)
+            log.debug('Importing {}', importer.getDisplayName())
+            D importedModel = importer.importDomain(IntegrationTestUser.instance, params)
 
             long endTime = System.currentTimeMillis()
-            getLogger().info('Import complete in {}', Utils.getTimeString(endTime - startTime))
+            log.info('Import complete in {}', Utils.getTimeString(endTime - startTime))
 
             assertNotNull('Domain should be imported', importedModel)
 
             if (validate) {
+
                 if (importedModel.validate()) saveDomain(importedModel)
                 else {
-                    outputDomainErrors(importedModel)
+                    GormUtils.outputDomainErrors(getMessageSource(), importedModel)
                     fail('Domain is invalid')
                 }
             }
@@ -75,11 +79,11 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPlug
 
             long startTime = System.currentTimeMillis()
 
-            getLogger().debug('Importing {}', importer.getDisplayName())
-            List<D> importedModels = importer.importDomains(catalogueUser, params)
+            log.debug('Importing {}', importer.getDisplayName())
+            List<D> importedModels = importer.importDomains(IntegrationTestUser.instance, params)
 
             long endTime = System.currentTimeMillis()
-            getLogger().info('Import complete in {}', Utils.getTimeString(endTime - startTime))
+            log.info('Import complete in {}', Utils.getTimeString(endTime - startTime))
 
             assertNotNull('Domains should be imported', importedModels)
             assertEquals('Number of domains imported', expectedSize, importedModels.size())
@@ -88,7 +92,7 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPlug
                 importedModels.each {domain ->
                     if (domain.validate()) saveDomain(domain)
                     else {
-                        outputDomainErrors(domain)
+                        GormUtils.outputDomainErrors(getMessageSource(), domain)
                         fail('Domain is invalid')
                     }
                 }
@@ -96,7 +100,7 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterPlug
             sessionFactory.getCurrentSession().flush()
             return importedModels
         } catch (Exception ex) {
-            getLogger().error('Something went wrong importing', ex)
+            log.error('Something went wrong importing', ex)
             fail(ex.getMessage())
         } finally {
             // sessionFactory.getCurrentSession().clear()
