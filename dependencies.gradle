@@ -1,40 +1,13 @@
 dependencies {
 
-    if (rootProject == parent) api project(':mc-plugin-database')
-    else api project(':mc-plugins:mc-plugin-database')
-
     implementation group: 'junit', name: 'junit', version: junitVersion
 
-    api "org.springframework.boot:spring-boot-starter-logging"
-    api "org.springframework.boot:spring-boot-autoconfigure"
-    api "org.grails:grails-core"
-    api "org.springframework.boot:spring-boot-starter-actuator"
-    api "org.springframework.boot:spring-boot-starter-tomcat"
-    api "org.grails:grails-plugin-url-mappings"
-    api "org.grails:grails-plugin-rest"
-    api "org.grails:grails-plugin-codecs"
-    api "org.grails:grails-plugin-interceptors"
-    api "org.grails:grails-plugin-services"
-    api "org.grails:grails-plugin-datasource"
-    api "org.grails:grails-plugin-databinding"
-    api "org.grails:grails-web-boot"
-    api "org.grails:grails-logging"
-    api "org.grails.plugins:cache"
-    api "org.grails.plugins:async"
-    api "org.grails:grails-plugin-services"
-    api "org.grails:grails-plugin-domain-class"
-    api "org.springframework.boot:spring-boot-starter-tomcat"
-    api "org.glassfish.web:el-impl:2.1.2-b03"
-    api "org.apache.tomcat:tomcat-jdbc"
-    api "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-core:4.0.0-SNAPSHOT'
+    implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-plugin-datamodel:4.0.0-SNAPSHOT'
+    implementation 'uk.ac.ox.softeng.maurodatamapper.plugins:mdm-plugin-database:2.0.0-SNAPSHOT'
 
-    api "org.grails:grails-gorm-testing-support:$grailsTestingSupportVersion"
-    api "org.grails:grails-web-testing-support:$grailsTestingSupportVersion"
-    api "org.grails:grails-testing-support:$grailsTestingSupportVersion"
-    api "org.grails.plugins:geb"
-    api "org.grails:grails-datastore-rest-client"
-    api "org.grails:grails-web-testing-support"
-    api "org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion"
-    api "net.sourceforge.htmlunit:htmlunit:$htmlunitVersion"
-    api "com.h2database:h2:1.4.196"
+    implementation group: 'org.codehaus.groovy', name: 'groovy'
+
+    // Logging
+    implementation group: 'org.slf4j', name: 'slf4j-api'
 }
