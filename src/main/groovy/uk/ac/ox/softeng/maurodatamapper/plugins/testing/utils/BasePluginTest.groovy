@@ -1,5 +1,6 @@
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
+import uk.ac.ox.softeng.maurodatamapper.core.Application
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
 import uk.ac.ox.softeng.maurodatamapper.security.User
@@ -7,7 +8,6 @@ import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
 import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
 import grails.boot.GrailsApp
-import grails.boot.config.GrailsAutoConfiguration
 import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
@@ -41,8 +41,6 @@ abstract class BasePluginTest {
     private TransactionStatus transactionStatus
 
     Folder testFolder
-
-    abstract Class<GrailsAutoConfiguration> getTestGrailsApplicationClass()
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -92,7 +90,7 @@ abstract class BasePluginTest {
         System.setProperty('mdm.env', 'plugin.test')
         if (System.getProperty('server.port') == null) System.setProperty('server.port', '8181')
 
-        applicationContext = GrailsApp.run(getTestGrailsApplicationClass())
+        applicationContext = GrailsApp.run(Application) // TODO(adjl): Investigate and refactor to allow passing of different Applications
 
         assertNotNull('We must have an applicationContext', applicationContext)
 
