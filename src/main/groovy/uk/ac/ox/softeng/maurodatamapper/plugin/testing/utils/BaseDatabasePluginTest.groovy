@@ -1,4 +1,4 @@
-package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
+package uk.ac.ox.softeng.maurodatamapper.plugin.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.api.exception.ApiException
 import uk.ac.ox.softeng.maurodatamapper.core.importer.ImporterService

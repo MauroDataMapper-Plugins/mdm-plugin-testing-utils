@@ -1,8 +1,8 @@
-package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
+package uk.ac.ox.softeng.maurodatamapper.plugin.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.ImporterProviderService
 import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.parameter.ImporterProviderServiceParameters
-import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user.IntegrationTestUser
+import uk.ac.ox.softeng.maurodatamapper.plugin.testing.utils.user.IntegrationTestUser
 import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
 import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
