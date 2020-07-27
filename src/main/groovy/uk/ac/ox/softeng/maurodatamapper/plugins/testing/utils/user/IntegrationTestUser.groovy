@@ -1,4 +1,4 @@
-package uk.ac.ox.softeng.maurodatamapper.plugin.testing.utils.user
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user
 
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.security.User

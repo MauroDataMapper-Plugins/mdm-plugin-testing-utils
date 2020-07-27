@@ -1,14 +1,12 @@
-package uk.ac.ox.softeng.maurodatamapper.plugin.testing.utils
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.core.Application
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
-import uk.ac.ox.softeng.maurodatamapper.security.User
 import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
 import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
 import grails.boot.GrailsApp
-import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
