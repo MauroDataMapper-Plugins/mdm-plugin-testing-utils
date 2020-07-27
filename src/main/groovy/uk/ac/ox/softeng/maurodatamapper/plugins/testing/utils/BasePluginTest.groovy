@@ -1,11 +1,13 @@
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
-import uk.ac.ox.softeng.maurodatamapper.core.Application
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
+import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.Application
 import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
 import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.core.util.StatusPrinter
 import grails.boot.GrailsApp
 import grails.util.Environment
 import groovy.util.logging.Slf4j
@@ -19,6 +21,7 @@ import org.junit.Rule
 import org.junit.rules.TestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.MessageSource
 import org.springframework.orm.hibernate5.SessionHolder
@@ -83,12 +86,14 @@ abstract class BasePluginTest {
 
     @BeforeClass
     static void setupGorm() {
+        final LoggerContext loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
+        StatusPrinter.print loggerContext // Print Logback's internal status
 
         System.setProperty(Environment.KEY, 'test')
         System.setProperty('mdm.env', 'plugin.test')
         if (System.getProperty('server.port') == null) System.setProperty('server.port', '8181')
 
-        applicationContext = GrailsApp.run(Application) // TODO(adjl): Investigate and refactor to allow passing of different Applications
+        applicationContext = GrailsApp.run(Application)
 
         assertNotNull('We must have an applicationContext', applicationContext)
 
