@@ -64,7 +64,10 @@ pipeline {
         stage('Deploy to Artifactory') {
             when {
                 allOf {
-                    branch 'master'
+                    anyOf {
+                        branch 'master'
+                        branch 'develop'
+                    }
                     expression {
                         currentBuild.currentResult == 'SUCCESS'
                     }
