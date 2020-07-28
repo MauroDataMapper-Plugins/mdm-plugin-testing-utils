@@ -44,7 +44,7 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterProv
             T importer = getImporterInstance()
             long startTime = System.currentTimeMillis()
 
-            log.debug('Importing {}', importer.getDisplayName())
+            log.debug('Importing using {}', importer.getDisplayName())
             D importedModel = importer.importDomain(IntegrationTestUser.instance, params)
 
             long endTime = System.currentTimeMillis()
@@ -53,15 +53,20 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterProv
             assertNotNull('Domain should be imported', importedModel)
 
             if (validate) {
-
-                if (importedModel.validate()) saveDomain(importedModel)
-                else {
+                log.info('Validating imported model')
+                if (importedModel.validate()) {
+                    log.info('Saving valid imported model')
+                    saveDomain(importedModel)
+                } else {
                     GormUtils.outputDomainErrors(getMessageSource(), importedModel)
                     fail('Domain is invalid')
                 }
             }
 
+            log.info('Flushing current session')
             sessionFactory.getCurrentSession().flush()
+
+            log.info('Completed importing domain')
             return importedModel
         } finally {
             // sessionFactory.getCurrentSession().clear()
