@@ -2,9 +2,9 @@ dependencies {
 
     api group: 'junit', name: 'junit', version: junitVersion
 
-    implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-core:4.0.0-SNAPSHOT'
-    implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-plugin-datamodel:4.0.0-SNAPSHOT'
-    implementation 'uk.ac.ox.softeng.maurodatamapper.plugins:mdm-plugin-database:2.0.0-SNAPSHOT'
+    implementation group:'uk.ac.ox.softeng.maurodatamapper', name:'mdm-core', version: mdmCoreVersion
+    implementation group:'uk.ac.ox.softeng.maurodatamapper', name:'mdm-plugin-datamodel', version: mdmPluginDataModelVersion
+    implementation group:'uk.ac.ox.softeng.maurodatamapper.plugins', name:'mdm-plugin-database', version: mdmPluginDatabaseVersion
 
     implementation group: 'org.codehaus.groovy', name: 'groovy'
 
