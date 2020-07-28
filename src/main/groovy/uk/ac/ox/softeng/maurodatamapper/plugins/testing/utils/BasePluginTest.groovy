@@ -1,14 +1,31 @@
+/*
+ * Copyright 2020 University of Oxford
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
-import uk.ac.ox.softeng.maurodatamapper.security.User
+import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.Application
 import uk.ac.ox.softeng.maurodatamapper.util.GormUtils
 import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.core.util.StatusPrinter
 import grails.boot.GrailsApp
-import grails.boot.config.GrailsAutoConfiguration
-import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
@@ -21,6 +38,7 @@ import org.junit.Rule
 import org.junit.rules.TestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.MessageSource
 import org.springframework.orm.hibernate5.SessionHolder
@@ -41,8 +59,6 @@ abstract class BasePluginTest {
     private TransactionStatus transactionStatus
 
     Folder testFolder
-
-    abstract Class<GrailsAutoConfiguration> getTestGrailsApplicationClass()
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -87,12 +103,14 @@ abstract class BasePluginTest {
 
     @BeforeClass
     static void setupGorm() {
+        final LoggerContext loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
+        StatusPrinter.print loggerContext // Print Logback's internal status
 
         System.setProperty(Environment.KEY, 'test')
         System.setProperty('mdm.env', 'plugin.test')
         if (System.getProperty('server.port') == null) System.setProperty('server.port', '8181')
 
-        applicationContext = GrailsApp.run(getTestGrailsApplicationClass())
+        applicationContext = GrailsApp.run(Application)
 
         assertNotNull('We must have an applicationContext', applicationContext)
 

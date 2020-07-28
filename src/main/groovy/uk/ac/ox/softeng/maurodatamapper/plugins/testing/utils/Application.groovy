@@ -15,30 +15,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user
+package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
-import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
-import uk.ac.ox.softeng.maurodatamapper.security.User
+import uk.ac.ox.softeng.maurodatamapper.util.Utils
 
-@Singleton
-class IntegrationTestUser implements User {
+import grails.boot.GrailsApp
+import grails.boot.config.GrailsAutoConfiguration
+import groovy.transform.CompileStatic
+import org.springframework.context.annotation.ComponentScan
 
-    String firstName = 'Integration Test'
-    String lastName = 'User'
-    String emailAddress = StandardEmailAddress.INTEGRATION_TEST
-    String tempPassword = ''
-
-    @Override
-    UUID getId() {
-        UUID.randomUUID()
+@CompileStatic
+@ComponentScan(basePackages = ['uk.ac.ox.softeng.maurodatamapper'])
+class Application extends GrailsAutoConfiguration {
+    static void main(String[] args) {
+        Utils.outputRuntimeArgs(Application)
+        GrailsApp.run(Application, args)
     }
 
-    UUID ident() {
-        id
-    }
-
-    @Override
-    String getDomainType() {
-        IntegrationTestUser
-    }
 }

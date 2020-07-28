@@ -1,11 +1,28 @@
+/*
+ * Copyright 2020 University of Oxford
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.api.exception.ApiException
 import uk.ac.ox.softeng.maurodatamapper.core.importer.ImporterService
 import uk.ac.ox.softeng.maurodatamapper.datamodel.DataModel
 import uk.ac.ox.softeng.maurodatamapper.datamodel.DataModelService
-import uk.ac.ox.softeng.maurodatamapper.plugin.database.AbstractDatabaseDataModelImporterProviderService
-import uk.ac.ox.softeng.maurodatamapper.plugin.database.DatabaseDataModelImporterProviderServiceParameters
+import uk.ac.ox.softeng.maurodatamapper.plugins.database.AbstractDatabaseDataModelImporterProviderService
+import uk.ac.ox.softeng.maurodatamapper.plugins.database.DatabaseDataModelImporterProviderServiceParameters
 
 import groovy.util.logging.Slf4j
 import org.junit.Before

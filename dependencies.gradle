@@ -1,6 +1,6 @@
 dependencies {
 
-    implementation group: 'junit', name: 'junit', version: junitVersion
+    api group: 'junit', name: 'junit', version: junitVersion
 
     implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-core:4.0.0-SNAPSHOT'
     implementation 'uk.ac.ox.softeng.maurodatamapper:mdm-plugin-datamodel:4.0.0-SNAPSHOT'
@@ -10,4 +10,40 @@ dependencies {
 
     // Logging
     implementation group: 'org.slf4j', name: 'slf4j-api'
+
+    // Grails
+    api("org.springframework.boot:spring-boot-devtools")
+    api "org.springframework.boot:spring-boot-starter-logging"
+    api "org.springframework.boot:spring-boot-autoconfigure"
+    api "org.grails:grails-core"
+    api "org.springframework.boot:spring-boot-starter-actuator"
+    api "org.springframework.boot:spring-boot-starter-tomcat"
+    api "org.grails:grails-plugin-url-mappings"
+    api "org.grails:grails-plugin-rest"
+    api "org.grails:grails-plugin-codecs"
+    api "org.grails:grails-plugin-interceptors"
+    api "org.grails:grails-plugin-services"
+    api "org.grails:grails-plugin-datasource"
+    api "org.grails:grails-plugin-databinding"
+    api "org.grails:grails-web-boot"
+    api "org.grails:grails-logging"
+    api "org.grails.plugins:cache", {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    api "org.grails.plugins:async"
+    api "org.grails.plugins:events"
+    api "org.grails.plugins:hibernate5:$grailsHibernate5Version"
+    api "org.hibernate:hibernate-core"
+    api "org.grails.plugins:views-json:$grailsViewsVersion"
+    api "org.grails.plugins:views-json-templates:$grailsViewsVersion"
+    api "org.grails.plugins:views-markup:$grailsViewsVersion"
+    api "io.micronaut:micronaut-inject-groovy"
+    api "org.glassfish.web:el-impl:2.1.2-b03"
+    api "com.h2database:h2"
+    api "org.apache.tomcat:tomcat-jdbc"
+    api "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    api "org.grails:grails-gorm-testing-support"
+    api "org.mockito:mockito-core"
+    api "io.micronaut:micronaut-http-client"
+    api "org.grails:grails-web-testing-support"
 }
