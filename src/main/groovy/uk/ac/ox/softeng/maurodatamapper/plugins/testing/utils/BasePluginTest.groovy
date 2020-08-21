@@ -17,6 +17,8 @@
  */
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
+import uk.ac.ox.softeng.maurodatamapper.core.authority.Authority
+import uk.ac.ox.softeng.maurodatamapper.core.authority.AuthorityService
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
 import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.Application
@@ -26,6 +28,7 @@ import uk.ac.ox.softeng.maurodatamapper.util.Utils
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.util.StatusPrinter
 import grails.boot.GrailsApp
+import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
@@ -47,6 +50,7 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import static org.junit.Assert.assertNotNull
+import static uk.ac.ox.softeng.maurodatamapper.util.GormUtils.checkAndSave
 
 /**
  * @since 08/08/2017
@@ -56,7 +60,14 @@ abstract class BasePluginTest {
 
     protected static ApplicationContext applicationContext
     private static PlatformTransactionManager transactionManager
+    private GrailsApplication grailsApplication
     private TransactionStatus transactionStatus
+
+    // private AuthorityService authorityService
+    // AuthorityService authorityService
+
+    // @Autowired
+    // AuthorityService authorityService
 
     Folder testFolder
 
@@ -87,6 +98,10 @@ abstract class BasePluginTest {
 
     MessageSource getMessageSource() {
         getBean(MessageSource)
+    }
+
+    AuthorityService getAuthorityService() {
+        getBean(AuthorityService)
     }
 
     protected <T> T getBean(Class<T> beanClass) {
@@ -124,6 +139,16 @@ abstract class BasePluginTest {
         transactionManager = applicationContext.getBean(PlatformTransactionManager)
 
         assertNotNull('We must have a transactionManager', hibernateDatastore)
+
+        Authority.withNewTransaction {
+            if (!authorityService.defaultAuthorityExists()) {
+                Authority authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
+                                                    url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
+                                                    createdBy: StandardEmailAddress.ADMIN,
+                                                    readableByEveryone: true)
+                checkAndSave(messageSource, authority)
+            }
+        }
 
         Utils.outputRuntimeArgs(getClass())
     }
