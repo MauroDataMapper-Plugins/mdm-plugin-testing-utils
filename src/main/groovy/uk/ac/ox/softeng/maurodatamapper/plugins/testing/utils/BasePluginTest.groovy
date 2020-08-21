@@ -27,7 +27,6 @@ import uk.ac.ox.softeng.maurodatamapper.util.Utils
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.util.StatusPrinter
 import grails.boot.GrailsApp
-import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
@@ -58,11 +57,10 @@ abstract class BasePluginTest {
 
     protected static ApplicationContext applicationContext
     private static PlatformTransactionManager transactionManager
-    private GrailsApplication grailsApplication
     private TransactionStatus transactionStatus
-    private Authority authority
 
     Folder testFolder
+    Authority authority
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -87,6 +85,11 @@ abstract class BasePluginTest {
         }
 
         assertNotNull("We must have a test folder", testFolder)
+
+        Authority.withNewTransaction {
+            authority = new Authority(label: 'maurodatamapper.authority.name', url: 'maurodatamapper.authority.url',
+                                      createdBy: StandardEmailAddress.ADMIN, readableByEveryone: true)
+        }
     }
 
     MessageSource getMessageSource() {
@@ -128,13 +131,6 @@ abstract class BasePluginTest {
         transactionManager = applicationContext.getBean(PlatformTransactionManager)
 
         assertNotNull('We must have a transactionManager', hibernateDatastore)
-
-        Authority.withNewTransaction {
-            authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
-                                      url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
-                                      createdBy: StandardEmailAddress.ADMIN,
-                                      readableByEveryone: true)
-        }
 
         Utils.outputRuntimeArgs(getClass())
     }
