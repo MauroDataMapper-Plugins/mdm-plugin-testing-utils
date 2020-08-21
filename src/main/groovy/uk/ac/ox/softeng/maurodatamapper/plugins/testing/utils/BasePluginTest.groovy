@@ -18,7 +18,6 @@
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
 import uk.ac.ox.softeng.maurodatamapper.core.authority.Authority
-import uk.ac.ox.softeng.maurodatamapper.core.authority.AuthorityService
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
 import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.Application
@@ -50,7 +49,6 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import static org.junit.Assert.assertNotNull
-import static uk.ac.ox.softeng.maurodatamapper.util.GormUtils.checkAndSave
 
 /**
  * @since 08/08/2017
@@ -62,12 +60,7 @@ abstract class BasePluginTest {
     private static PlatformTransactionManager transactionManager
     private GrailsApplication grailsApplication
     private TransactionStatus transactionStatus
-
-    // private AuthorityService authorityService
-    // AuthorityService authorityService
-
-    // @Autowired
-    // AuthorityService authorityService
+    private Authority authority
 
     Folder testFolder
 
@@ -98,10 +91,6 @@ abstract class BasePluginTest {
 
     MessageSource getMessageSource() {
         getBean(MessageSource)
-    }
-
-    AuthorityService getAuthorityService() {
-        getBean(AuthorityService)
     }
 
     protected <T> T getBean(Class<T> beanClass) {
@@ -141,13 +130,10 @@ abstract class BasePluginTest {
         assertNotNull('We must have a transactionManager', hibernateDatastore)
 
         Authority.withNewTransaction {
-            if (!authorityService.defaultAuthorityExists()) {
-                Authority authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
-                                                    url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
-                                                    createdBy: StandardEmailAddress.ADMIN,
-                                                    readableByEveryone: true)
-                checkAndSave(messageSource, authority)
-            }
+            authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
+                                      url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
+                                      createdBy: StandardEmailAddress.ADMIN,
+                                      readableByEveryone: true)
         }
 
         Utils.outputRuntimeArgs(getClass())
