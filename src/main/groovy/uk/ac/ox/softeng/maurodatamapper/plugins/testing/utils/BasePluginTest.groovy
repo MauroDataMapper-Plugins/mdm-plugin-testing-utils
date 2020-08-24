@@ -17,6 +17,8 @@
  */
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
+import uk.ac.ox.softeng.maurodatamapper.core.authority.Authority
+import uk.ac.ox.softeng.maurodatamapper.core.authority.AuthorityService
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
 import uk.ac.ox.softeng.maurodatamapper.core.container.Folder
 import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.Application
@@ -26,6 +28,7 @@ import uk.ac.ox.softeng.maurodatamapper.util.Utils
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.util.StatusPrinter
 import grails.boot.GrailsApp
+import grails.core.GrailsApplication
 import grails.util.Environment
 import groovy.util.logging.Slf4j
 import org.grails.orm.hibernate.HibernateDatastore
@@ -47,6 +50,7 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertTrue
 
 /**
  * @since 08/08/2017
@@ -83,6 +87,18 @@ abstract class BasePluginTest {
         }
 
         assertNotNull("We must have a test folder", testFolder)
+
+        GrailsApplication grailsApplication = getBean(GrailsApplication)
+        AuthorityService authorityService = getBean(AuthorityService)
+
+        if (!authorityService.defaultAuthorityExists()) {
+            Authority authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
+                                                url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
+                                                createdBy: StandardEmailAddress.ADMIN,
+                                                readableByEveryone: true)
+            GormUtils.checkAndSave(getMessageSource(), authority)
+        }
+        assertTrue("We must have a default authority folder", authorityService.defaultAuthorityExists())
     }
 
     MessageSource getMessageSource() {
