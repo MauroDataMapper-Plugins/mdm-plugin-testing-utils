@@ -67,7 +67,7 @@ abstract class BaseDatabasePluginTest<P extends DatabaseDataModelImporterProvide
 
     @Override
     DataModel saveDomain(DataModel domain) {
-        getBean(DataModelService).saveWithBatching(domain)
+        getBean(DataModelService).saveModelWithContent(domain)
     }
 
     protected P createDatabaseImportParameters(String host, int port) {
