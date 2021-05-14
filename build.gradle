@@ -35,17 +35,10 @@ apply plugin: "com.github.hierynomus.license"
 apply plugin: 'ox.softeng.ox-brc-standard'
 apply plugin: 'ox.softeng.ox-brc-artifactory'
 apply plugin: 'ox.softeng.ox-brc-grails-reliant'
-
-apply from: 'dependencies.gradle'
-
-sca.ciEnabled ciRun.toBoolean()
+apply plugin: 'ox.softeng.static-code-analysis'
 
 jar {
     exclude 'logback.groovy'
-}
-
-license {
-    header = file "$rootDir/NOTICE"
 }
 
 logger.quiet(
@@ -53,13 +46,13 @@ logger.quiet(
     "Max unit test parallel forks: ${Runtime.runtime.availableProcessors().intdiv(2) ?: 1}")
 
 afterEvaluate {
-
     configurations.all {
         // check for updates every build
         resolutionStrategy.cacheChangingModulesFor 0, TimeUnit.SECONDS
         resolutionStrategy.cacheDynamicVersionsFor 0, TimeUnit.SECONDS
     }
-    tasks.withType(JavaExec) {
-        systemProperty 'env.logFileName', project.name
-    }
 }
+
+apply from: 'dependencies.gradle'
+apply from: "${projectDir}/gradle/additions/mdm.gradle"
+apply from: "${projectDir}/gradle/additions/staticCodeAnalysis.gradle"
