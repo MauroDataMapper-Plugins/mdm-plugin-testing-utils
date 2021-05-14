@@ -97,7 +97,7 @@ pipeline {
             recordIssues enabledForFailure: true, tool: codeNarc(pattern: '**/reports/codenarc/*.xml')
             recordIssues enabledForFailure: true, tool: spotBugs(pattern: '**/reports/spotbugs/*.xml', useRankAsPriority: true)
             recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/reports/pmd/*.xml')
-            slackNotification()
+            zulipNotification(topic: 'mdm-plugin-testing-utils')
         }
     }
 }
