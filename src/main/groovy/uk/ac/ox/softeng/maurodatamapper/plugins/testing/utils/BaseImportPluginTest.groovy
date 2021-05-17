@@ -17,6 +17,8 @@
  */
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils
 
+
+import uk.ac.ox.softeng.maurodatamapper.core.model.Model
 import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.ImporterProviderService
 import uk.ac.ox.softeng.maurodatamapper.core.provider.importer.parameter.ImporterProviderServiceParameters
 import uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user.IntegrationTestUser
@@ -64,6 +66,10 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterProv
             log.debug('Importing using {}', importer.getDisplayName())
             D importedModel = importer.importDomain(IntegrationTestUser.instance, params)
 
+            if (importedModel instanceof Model) {
+                importedModel.folder = testFolder
+            }
+
             long endTime = System.currentTimeMillis()
             log.info('Import complete in {}', Utils.getTimeString(endTime - startTime))
 
@@ -103,6 +109,12 @@ abstract class BaseImportPluginTest<D extends GormEntity, P extends ImporterProv
 
             log.debug('Importing {}', importer.getDisplayName())
             List<D> importedModels = importer.importDomains(IntegrationTestUser.instance, params)
+
+            importedModels.each {importedModel ->
+                if (importedModel instanceof Model) {
+                    importedModel.folder = testFolder
+                }
+            }
 
             long endTime = System.currentTimeMillis()
             log.info('Import complete in {}', Utils.getTimeString(endTime - startTime))
