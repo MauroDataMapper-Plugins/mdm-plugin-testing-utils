@@ -95,7 +95,8 @@ abstract class BasePluginTest {
             Authority authority = new Authority(label: grailsApplication.config.getProperty(Authority.DEFAULT_NAME_CONFIG_PROPERTY),
                                                 url: grailsApplication.config.getProperty(Authority.DEFAULT_URL_CONFIG_PROPERTY),
                                                 createdBy: StandardEmailAddress.ADMIN,
-                                                readableByEveryone: true)
+                                                readableByEveryone: true,
+                                                defaultAuthority: true)
             GormUtils.checkAndSave(getMessageSource(), authority)
         }
         assertTrue("We must have a default authority folder", authorityService.defaultAuthorityExists())
