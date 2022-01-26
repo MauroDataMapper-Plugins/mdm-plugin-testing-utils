@@ -18,6 +18,7 @@
 package uk.ac.ox.softeng.maurodatamapper.plugins.testing.utils.user
 
 import uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress
+import uk.ac.ox.softeng.maurodatamapper.path.Path
 import uk.ac.ox.softeng.maurodatamapper.security.User
 
 @Singleton
@@ -35,6 +36,11 @@ class IntegrationTestUser implements User {
 
     UUID ident() {
         id
+    }
+
+    @Override
+    Path getPath() {
+        Path.from('cu',emailAddress)
     }
 
     @Override
