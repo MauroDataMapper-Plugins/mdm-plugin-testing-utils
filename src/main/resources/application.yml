@@ -21,10 +21,7 @@ database:
     port: 5432
     name: maurodatamapper
 ---
-apiUser:
-    username: admin@maurodatamapper.com
-    password: password
----
+
 #Default for plugins/applications
 ---
 maurodatamapper:
@@ -155,7 +152,7 @@ hibernate:
             provider: org.ehcache.jsr107.EhcacheCachingProvider
             missing_cache_strategy: create
     search:
-        default.indexBase: '/tmp/lucene/plugins/testing/utils'
+        backend.directory.root: 'build/lucene'
 
 ---
 database:
