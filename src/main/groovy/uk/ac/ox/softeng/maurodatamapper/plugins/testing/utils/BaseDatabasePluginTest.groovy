@@ -29,12 +29,12 @@ import uk.ac.ox.softeng.maurodatamapper.plugins.database.summarymetadata.Integer
 
 import grails.util.Pair
 import groovy.util.logging.Slf4j
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime
 import org.junit.Before
 import org.junit.Test
 import org.springframework.validation.FieldError
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 import static org.junit.Assert.assertEquals
