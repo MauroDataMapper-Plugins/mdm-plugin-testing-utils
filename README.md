@@ -1,5 +1,6 @@
 # mdm-plugin-testing-utils
-Repository to provide common testing utils for plugins
+Repository to provide common testing utils for plugins which are Gradle based and not Grails based. This plugin should not be used to provide testing support for Grails based
+plugins.
 
 | Branch | Build Status |
 | ------ | ------------ |
