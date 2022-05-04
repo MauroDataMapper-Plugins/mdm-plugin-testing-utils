@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'jakarta.annotation:jakarta.annotation-api:2.0.0'
-        classpath "ox.softeng.gradle:oxbrcinformatics-gradle-plugins:$oxbrcinformaticsGradlePluginsVersion"
+        classpath "uk.ac.ox.softeng.maurodatamapper.gradle:mdm-gradle-plugin:$mdmGradlePluginVersion"
         configurations.classpath {
             // check for updates every build
             resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
@@ -19,12 +19,9 @@ buildscript {
 
 plugins {
     id 'groovy'
-    id "com.github.hierynomus.license" version "${licenseGradlePluginVersion}"
 }
 
-apply plugin: 'ox.softeng.ox-brc-standard'
-apply plugin: 'ox.softeng.ox-brc-artifactory'
-apply plugin: 'ox.softeng.static-code-analysis'
+apply plugin: 'uk.ac.ox.softeng.maurodatamapper.gradle.mdm-gradle'
 
 jar {
     exclude 'logback.groovy'
@@ -43,19 +40,3 @@ afterEvaluate {
 }
 
 apply from: 'dependencies.gradle'
-apply from: "${projectDir}/gradle/additions/mdm.gradle"
-apply from: "${projectDir}/gradle/additions/staticCodeAnalysis.gradle"
-
-//controlVersionPropertiesFromMdmBom()
-//
-//// Pulls the properties from the mdm-bom and applies them to the project
-//// Theres collisions between the gradle platform and spring dependency plugin which result in the versions we want not being used
-//void controlVersionPropertiesFromMdmBom() {
-//    MavenPomResolver pomResolver = new MavenPomResolver(project, new DependencyManagementConfigurationContainer(project))
-//    Coordinates bomCoords = new Coordinates('uk.ac.ox.softeng.maurodatamapper', 'mdm-bom', mdmCoreVersion)
-//    PomReference pomReference = new PomReference(bomCoords, new MapPropertySource([:]))
-//    List<Pom> resolvedPoms = pomResolver.resolvePoms([pomReference], new ProjectPropertySource(project))
-//    resolvedPoms.first().properties.sort().each {k, v ->
-//        project.ext[k] = v
-//    }
-//}
