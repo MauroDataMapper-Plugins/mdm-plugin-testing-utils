@@ -1,5 +1,6 @@
 # mdm-plugin-testing-utils
-Repository to provide common testing utils for plugins
+Repository to provide common testing utils for plugins which are Gradle based and not Grails based. This plugin should not be used to provide testing support for Grails based
+plugins.
 
 | Branch | Build Status |
 | ------ | ------------ |
@@ -9,7 +10,7 @@ Repository to provide common testing utils for plugins
 ## Requirements
 
 * Java 17 (Temurin)
-* Grails 5.1.2+
+* Grails 5.1.9+
 * Gradle 7.3.3+
 
 All of the above can be installed and easily maintained by using [SDKMAN!](https://sdkman.io/install).

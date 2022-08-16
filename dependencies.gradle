@@ -3,8 +3,6 @@ dependencies {
     api group: 'junit', name: 'junit'//, version: junitVersion
 
     implementation group:'uk.ac.ox.softeng.maurodatamapper', name:'mdm-core', version: mdmCoreVersion
-    implementation group:'uk.ac.ox.softeng.maurodatamapper', name:'mdm-plugin-datamodel', version: mdmCoreVersion
-    implementation group:'uk.ac.ox.softeng.maurodatamapper.plugins', name:'mdm-plugin-database', version: mdmPluginDatabaseVersion
 
     implementation group: 'org.codehaus.groovy', name: 'groovy'
     api 'jakarta.annotation:jakarta.annotation-api'
